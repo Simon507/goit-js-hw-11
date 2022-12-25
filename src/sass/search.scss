@@ -1,0 +1,22 @@
+.search-form {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  background-color: cadetblue;
+}
+
+// .search-btn {
+//   margin-left: 25px;
+// }
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+
+// .img {
+//   display: block;
+//   // flex-basis: calc((100% - 100px) / 5);
+// }
