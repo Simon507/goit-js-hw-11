@@ -2,9 +2,8 @@ import { createResult } from '../index';
 
 const inputField = document.querySelector('input[name="searchQuery"]');
 const axios = require('axios').default;
-const pageNum = 1;
 
-async function searchRequest() {
+async function searchRequest(pageNum) {
   let searchTarget = inputField.value;
 
   if (!searchTarget) {
