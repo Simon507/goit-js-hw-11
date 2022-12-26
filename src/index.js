@@ -17,13 +17,14 @@ function onSubmit(evt) {
   searchRequest();
 }
 
-function createResult(data) {
-  console.log(data);
-
-  for (let i = 0; i <= data.total; i += 1) {
-    // console.log(data.hits[i].pageURL);
+function createResult(response) {
+  // console.log(response);
+  const element = response.data.hits;
+  for (let i = 0; i < response.data.total; i += 1) {
+    console.log(element[i].previewURL);
     const newItem = `<div class="photo-card">
-          <img src="${data.hits[i].previewURL}" alt="" loading="lazy" />
+          <img src="${element[i].webformatURL}" 
+          alt="${element[i].tags}" loading="lazy" />
           <div class="info">
             <p class="info-item">
               <b>Likes</b>
