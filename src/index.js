@@ -4,7 +4,13 @@ import SimpleLightbox from 'simplelightbox';
 const searchForm = document.getElementById('search-form');
 const loadBtn = document.querySelector('.load-more');
 const resultsField = document.querySelector('.gallery');
-let resp;
+
+// const lightBox = new SimpleLightbox('.photo-card a', {
+//   captionsData: 'alt',
+//   captionDelay: 250,
+//   nav: true,
+// });
+
 let pageNum = 1;
 
 loadBtn.setAttribute('hidden', 'hidden');
@@ -21,13 +27,12 @@ function onSubmit(evt) {
 }
 
 function createResult(response) {
-  // console.log(response);
   const element = response.data.hits;
   for (let i = 0; i < element.length; i += 1) {
-    // console.log(element[i]);
-    const newItem = `<div class="photo-card">
+    const newItem = `
+    <div class="photo-card">
     <a href="${element[i].largeImageURL}">
-    <img class="_img" src="${element[i].webformatURL}" alt="${element[i].tags}" loading="lazy" />
+    <img class="_img" src="${element[i].webformatURL}" alt="${element[i].tags}" loading="lazy">
     </a>
     </div>
           <div class="info">
@@ -45,22 +50,11 @@ function createResult(response) {
             </p>
           </div>
         </div>`;
+
     resultsField.insertAdjacentHTML('beforeend', newItem);
+
     loadBtn.removeAttribute('hidden');
   }
-
-  // function onResultClick(evt, response) {
-  //   evt.preventDefault();
-  //   console.log(response);
-  //   // const element = response.data.hits;
-  //   // var lightBox = new SimpleLightbox('.photo-card img', {
-  //   //   sourceAttr: element.largeImageURL,
-  //   //   captionsData: 'alt',
-  //   //   captionDelay: 250,
-  //   // });
-  // }
-  // resp = response;
-  // return resp;
 }
 
 loadBtn.addEventListener('click', onLoadBtnClick);
@@ -73,16 +67,14 @@ function onLoadBtnClick() {
 resultsField.addEventListener('click', onResultClick);
 
 function onResultClick(evt) {
+  console.log(evt.target);
   evt.preventDefault();
-  // console.dir(resp);
 
-  console.log(evt.target.src);
+  // lightBox;
 
-  // const element = response.data.hits;
-  var lightBox = new SimpleLightbox('.photo-card a', {
-    // sourceAttr: evt.target.src,
-    // captionsData: 'alt',
-    // captionDelay: 250,
+  const lightBox = new SimpleLightbox('.photo-card a', {
+    captionsData: 'alt',
+    captionDelay: 250,
   });
 }
 
