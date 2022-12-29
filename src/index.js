@@ -5,11 +5,11 @@ const searchForm = document.getElementById('search-form');
 const loadBtn = document.querySelector('.load-more');
 const resultsField = document.querySelector('.gallery');
 
-// const lightBox = new SimpleLightbox('.photo-card a', {
-//   captionsData: 'alt',
-//   captionDelay: 250,
-//   nav: true,
-// });
+let lightBox = new SimpleLightbox('.photo-card a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+  nav: true,
+});
 
 let pageNum = 1;
 
@@ -19,8 +19,10 @@ searchForm.addEventListener('submit', onSubmit);
 
 function onSubmit(evt) {
   evt.preventDefault();
-  // alert('click!');
 
+  while (resultsField.firstChild) {
+    resultsField.firstChild.remove();
+  }
   // ДОБАВИТЬ ПРОВЕРКУ НА ПУСТОТУ И ПРОБЕЛЫ!!!!!
 
   searchRequest(pageNum);
@@ -54,6 +56,8 @@ function createResult(response) {
     resultsField.insertAdjacentHTML('beforeend', newItem);
 
     loadBtn.removeAttribute('hidden');
+
+    lightBox.refresh();
   }
 }
 
@@ -62,20 +66,6 @@ loadBtn.addEventListener('click', onLoadBtnClick);
 function onLoadBtnClick() {
   pageNum += 1;
   searchRequest(pageNum);
-}
-
-resultsField.addEventListener('click', onResultClick);
-
-function onResultClick(evt) {
-  console.log(evt.target);
-  evt.preventDefault();
-
-  // lightBox;
-
-  const lightBox = new SimpleLightbox('.photo-card a', {
-    captionsData: 'alt',
-    captionDelay: 250,
-  });
 }
 
 export { createResult };
