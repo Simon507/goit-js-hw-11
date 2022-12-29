@@ -30,35 +30,40 @@ function onSubmit(evt) {
 
 function createResult(response) {
   const element = response.data.hits;
-  for (let i = 0; i < element.length; i += 1) {
-    const newItem = `
-    <div class="photo-card">
-    <a href="${element[i].largeImageURL}">
-    <img class="_img" src="${element[i].webformatURL}" alt="${element[i].tags}" loading="lazy">
-    </a>
-    </div>
-          <div class="info">
-            <p class="info-item">
-              <b>Likes</b>
+  const markUp = element.map(
+    ({
+      webformatURL,
+      largeImageURL,
+      tags,
+      likes,
+      views,
+      comments,
+      downloads,
+    }) => `<div class="photo-card">
+     <a href="${largeImageURL}">
+     <img class="_img" src="${webformatURL}" alt="${tags}" loading="lazy">
+     <div class="photo-card">
+     </a>
+     </div>
+           <div class="info">
+             <p class="info-item">
+               <b>Likes: ${likes}</b>
+             </p>
+             <p class="info-item">
+               <b>Views: ${views}</b>
+             </p>
+             <p class="info-item">
+               <b>Comments: ${comments}</b>
             </p>
-            <p class="info-item">
-              <b>Views</b>
-            </p>
-            <p class="info-item">
-              <b>Comments</b>
-            </p>
-            <p class="info-item">
-              <b>Downloads</b>
-            </p>
-          </div>
-        </div>`;
-
-    resultsField.insertAdjacentHTML('beforeend', newItem);
-
-    loadBtn.removeAttribute('hidden');
-
-    lightBox.refresh();
-  }
+             <p class="info-item">
+               <b>Downloads: ${downloads}</b>
+             </p>
+           </div>
+         </div>`
+  );
+  resultsField.insertAdjacentHTML('beforeend', markUp);
+  loadBtn.removeAttribute('hidden');
+  lightBox.refresh();
 }
 
 loadBtn.addEventListener('click', onLoadBtnClick);
