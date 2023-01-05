@@ -31,7 +31,6 @@ async function searchRequest(pageNum) {
       );
     } else {
       createResult(response);
-      observer.observe(guard);
     }
   } catch (error) {
     if (error.code === 'ERR_BAD_REQUEST') {
