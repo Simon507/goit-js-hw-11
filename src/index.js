@@ -1,19 +1,29 @@
 import { searchRequest } from './js/search';
 import SimpleLightbox from 'simplelightbox';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const searchForm = document.getElementById('search-form');
-const loadBtn = document.querySelector('.load-more');
+const upBtn = document.querySelector('.upBtn');
 const resultsField = document.querySelector('.gallery');
+const guard = document.querySelector('.js-guard');
+
+const options = {
+  root: null,
+  rootMargin: '100px',
+  threshold: 1.0,
+};
+
+const observer = new IntersectionObserver(onInfinityLoad, options);
 
 let lightBox = new SimpleLightbox('.photo-card a', {
   captionsData: 'alt',
-  captionDelay: 250,
+  captionDelay: 500,
   nav: true,
 });
 
 let pageNum = 1;
 
-loadBtn.setAttribute('hidden', 'hidden');
+upBtn.setAttribute('hidden', 'hidden');
 
 searchForm.addEventListener('submit', onSubmit);
 
@@ -23,29 +33,27 @@ function onSubmit(evt) {
   while (resultsField.firstChild) {
     resultsField.firstChild.remove();
   }
-  // ДОБАВИТЬ ПРОВЕРКУ НА ПУСТОТУ И ПРОБЕЛЫ!!!!!
-
   searchRequest(pageNum);
 }
 
 function createResult(response) {
   const element = response.data.hits;
-  const markUp = element.map(
-    ({
-      webformatURL,
-      largeImageURL,
-      tags,
-      likes,
-      views,
-      comments,
-      downloads,
-    }) => `<div class="photo-card">
-     <a href="${largeImageURL}">
-     <img class="_img" src="${webformatURL}" alt="${tags}" loading="lazy">
-     <div class="photo-card">
-     </a>
-     </div>
-           <div class="info">
+  const maxPage = Math.trunc(response.data.totalHits / 40) + 1;
+  const markUp = element
+    .map(
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => `<div class="photo-card">
+          <a href="${largeImageURL}">
+        <img class="_img" src="${webformatURL}" alt="${tags}" loading="lazy">
+      </a>
+            <div class="info">
              <p class="info-item">
                <b>Likes: ${likes}</b>
              </p>
@@ -60,17 +68,31 @@ function createResult(response) {
              </p>
            </div>
          </div>`
-  );
+    )
+    .join('');
   resultsField.insertAdjacentHTML('beforeend', markUp);
-  loadBtn.removeAttribute('hidden');
   lightBox.refresh();
+
+  if (pageNum === 1) {
+    Notify.success(`Hooray! We found ${response.data.totalHits} images.`);
+  }
+  if (pageNum > 2) {
+    upBtn.removeAttribute('hidden');
+  }
+  if (pageNum <= maxPage) {
+    observer.observe(guard);
+  } else {
+    observer.unobserve(guard);
+  }
 }
 
-loadBtn.addEventListener('click', onLoadBtnClick);
-
-function onLoadBtnClick() {
-  pageNum += 1;
-  searchRequest(pageNum);
+function onInfinityLoad(entries, observer) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pageNum += 1;
+      searchRequest(pageNum);
+    }
+  });
 }
 
 export { createResult };

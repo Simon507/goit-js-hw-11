@@ -1,3 +1,4 @@
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { createResult } from '../index';
 
 const inputField = document.querySelector('input[name="searchQuery"]');
@@ -7,7 +8,7 @@ async function searchRequest(pageNum) {
   let searchTarget = inputField.value;
 
   if (!searchTarget) {
-    alert(`add text!!!`); //  Сделать всплывашку
+    Notify.failure(`Please enter you request...`);
     return;
   }
 
@@ -24,10 +25,19 @@ async function searchRequest(pageNum) {
       },
     });
 
-    createResult(response);
+    if (response.data.totalHits === 0) {
+      Notify.failure(
+        `Sorry, there are no images matching your search query. Please try again.`
+      );
+    } else {
+      createResult(response);
+      observer.observe(guard);
+    }
   } catch (error) {
-    console.error(error);
-    //!!!!!!!!!!!!!!!!!!!!! сделать всплывашку
+    if (error.code === 'ERR_BAD_REQUEST') {
+      Notify.warning(`
+           Sorry, in this version it is not possible to display more than 500 pictures.`);
+    }
   }
 }
 
